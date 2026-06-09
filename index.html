@@ -1,210 +1,844 @@
-<!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
-<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
-<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->  
-<head>
-    <title>Niranjan Syamala - Full Stack Developer</title>
-    <!-- Meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Niranjan Syamala - Full Stack Developer">
-    <meta name="author" content="Niranjan Syamamla">    
-    <link rel="shortcut icon" href="favicon.ico">  
-    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,400italic,300italic,300,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
-    <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">   
-    <!-- Plugins CSS -->
-    <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.css">
-    
-    <!-- Theme CSS -->  
-    <link id="theme-style" rel="stylesheet" href="assets/css/styles.css">
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head> 
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 
-<body>
-    <div class="wrapper">
-        <div class="sidebar-wrapper">
-            <div class="profile-container">
-                <img class="profile" src="assets/images/profile.png" alt="" />
-                <h1 class="name">Niranjan Syamala</h1>
-                <h3 class="tagline">Full Stack Developer</h3>
-            </div><!--//profile-container-->
-            
-            <div class="contact-container container-block">
-                <ul class="list-unstyled contact-list">
-                    <li class="email"><i class="fa fa-envelope"></i><a href="mailto: niranjan.syamala@gmail.com">niranjan.syamala@gmail.com</a></li>
-                    <li class="phone"><i class="fa fa-phone"></i><a href="tel:(+91) 9949959967">(+91) 9949959967 </a></li>
-                    <li class="linkedin"><i class="fa fa-linkedin"></i><a href="https://www.linkedin.com/in/niranjan-syamala-bb86b980/" target="_blank">Niranjan Syamala</a></li>
-            </ul>
-            </div><!--//contact-container-->
-            <div class="education-container container-block">
-                <h2 class="container-block-title">Education</h2>
-                <div class="item">
-                    <h4 class="degree">Master of Technology</h4>
-                    <h5 class="meta">Vignan University</h5>
-                    <div class="time">2009 - 2011</div>
-                </div><!--//item-->
-                <div class="item">
-                    <h4 class="degree">Bachelers of Technology</h4>
-                    <h5 class="meta">VMRF University</h5>
-                    <div class="time">2004 - 2008</div>
-                </div><!--//item-->
-            </div><!--//education-container-->
-            
-            <div class="languages-container container-block">
-                <h2 class="container-block-title">Languages</h2>
-                <ul class="list-unstyled interests-list">
-                    <li>Telugu <span class="lang-desc">(Native)</span></li>
-                    <li>English <span class="lang-desc">(Professional)</span></li>
-                    <li>Hindi <span class="lang-desc">(Professional)</span></li>
-                   
-                </ul>
-            </div><!--//interests-->
-            
-            <div class="interests-container container-block">
-                <h2 class="container-block-title">Interests</h2>
-                <ul class="list-unstyled interests-list">
-                    <li>Playing cricket</li>
-                    <li>Cooking</li>
-                </ul>
-            </div><!--//interests-->
-            
-        </div><!--//sidebar-wrapper-->
-        
-        <div class="main-wrapper">
-            
-            <section class="section summary-section">
-                <h2 class="section-title"><i class="fa fa-user"></i>Career Profile</h2>
-                <div class="summary">
-                    <p></p>
-                </div><!--//summary-->
-            </section><!--//section-->
-            
-            <section class="section experiences-section">
-                <h2 class="section-title"><i class="fa fa-briefcase"></i>Experiences</h2>
-                 <div class="item">
-                    <div class="meta">
-                        <div class="upper-row">
-                            <h3 class="job-title">Senior Applications Engineer</h3>
-                            <div class="time">2017 - Present</div>
-                        </div><!--//upper-row-->
-                        <div class="company">Oracle India Pvt. Ltd.</div>
-                    </div><!--//meta-->
-                    <div class="details">
-                       <p>Member of Fusion development team that develops a Recruiting Product.
-                       </p>
-                    </div><!--//details-->
-                </div><!--//item-->
+// --- INLINE SVG ICONS FOR ABSOLUTE ROBUSTNESS ---
+const MailIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+  </svg>
+);
+
+const PhoneIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+  </svg>
+);
+
+const LinkedinIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+  </svg>
+);
+
+const DownloadIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+);
+
+const BrainIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+  </svg>
+);
+
+const CodeIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+  </svg>
+);
+
+const StarIcon = () => (
+  <svg className="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+  </svg>
+);
+
+const GraphIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+);
+
+// --- COMPREHENSIVE EXPERT RESUME DATA ---
+const RESUME_DATA = {
+  name: "Niranjan Syamala",
+  title: "Principal Applications Engineer & AI Solutions Architect",
+  location: "Hyderabad, India",
+  email: "niranjan.syamala@gmail.com",
+  phone: "9949959967",
+  linkedin: "linkedin.com/in/niranjansyamala",
+  summary: `As a Principal Applications Engineer at Oracle with over 13 years of experience in software engineering, I specialize in developing advanced AI-driven solutions. My expertise includes Graph Retrieval-Augmented Generation (Graph RAG) systems, Python programming, and the application of large language models (LLMs) for extracting actionable insights from complex data. At Oracle, I focus on enhancing recruitment processes through agentic workflows and optimizing the user experience within the fusion hiring module. With a commitment to innovation, my contributions support scalable, efficient systems that empower organizations to make data-driven decisions. I also bring strong full-stack capabilities, having architected seamless frontend interfaces using React and TypeScript to consume complex JSON web services.`,
+  
+  skills: {
+    "AI & Machine Learning": ["Graph RAG", "Large Language Models (LLM)", "Agentic Workflows", "Spring AI"],
+    "Frontend Technologies": ["React.js", "TypeScript", "JavaScript", "HTML/CSS", "AngularJS"],
+    "Backend Languages": ["Python", "Java", "J2EE", "JSP", "Servlets"],
+    "Frameworks & Architecture": ["Spring Boot", "Spring WebFlux", "Microservices", "MVC", "REST", "SOAP"],
+    "Cloud Platforms": ["GCP (Google Cloud)", "AWS (EC2, S3, SNS, Lambda, Bedrock)"],
+    "DevOps & Databases": ["Docker", "Kubernetes (K8s)", "Jenkins", "Graph Databases (Neo4j)", "PostgreSQL", "MongoDB", "Oracle 11g"]
+  },
+
+  experience: [
+    {
+      company: "Oracle",
+      role: "Principal Applications Engineer",
+      period: "April 2024 - Present",
+      location: "Hyderabad, India",
+      highlights: [
+        "Spearheaded the development of complex agentic workflows for the enterprise Recruiting module, enhancing candidate application flows with self-correcting logic.",
+        "Collaborated with cross-functional AI product squads to integrate smart agents into the Oracle Fusion Hiring module, significantly streamlining high-volume recruitment pipelines.",
+        "Optimized frontend responsive architectures using React.js and TypeScript, consuming intricate JSON endpoints with strict state validation and localized caching.",
+        "Spearheaded technical designs focusing on user experience, system efficiency, and low-latency rendering of data-dense AI processing screens."
+      ],
+      skillsUsed: ["Agentic Workflows", "Large Language Models (LLM)", "React.js", "TypeScript", "Java", "Spring Boot", "Microservices"]
+    },
+    {
+      company: "Cue Health",
+      role: "Staff Software Engineer & Senior Software Engineer",
+      period: "August 2022 - March 2024",
+      location: "Remote / San Diego, CA (Collaborative)",
+      highlights: [
+        "Engineered a production-grade Graph Retrieval-Augmented Generation (Graph RAG) system to automate complex patient diagnostic report analysis, accelerating clinical throughput by 40%.",
+        "Developed an advanced pipeline in Python to parse structured/unstructured reports, extracting deep healthcare entity connections stored in a high-performance Graph Database.",
+        "Designed and implemented high-performance, non-blocking microservices using Spring Boot, Spring WebFlux, and reactive paradigms to handle heavy diagnostic telemetry stream operations.",
+        "Architected compliant cloud deployments on Google Cloud Platform (GCP), ensuring rigid HIPAA security controls and dynamic horizontal scaling via Kubernetes."
+      ],
+      skillsUsed: ["Graph RAG", "Python", "Graph Databases (Neo4j)", "GCP (Google Cloud)", "Spring Boot", "Spring WebFlux", "Microservices", "Kubernetes (K8s)"]
+    },
+    {
+      company: "Oracle",
+      role: "Project Lead & Senior Software Engineer",
+      period: "November 2017 - August 2022",
+      location: "Hyderabad, India",
+      highlights: [
+        "Owned functional and technical design reviews for core components within the Oracle HCM Cloud suite, serving millions of active corporate recruiting profiles globally.",
+        "Designed and deployed automated workflows and custom internal diagnostic dashboards using Core Java and Oracle SQL, reducing team support overhead by 30%.",
+        "Ensured rigorous security reviews, high performance indexing, and flawless database compliance during heavy cloud migration sprints."
+      ],
+      skillsUsed: ["Java", "J2EE", "Oracle 11g", "REST", "MVC", "Docker", "Jenkins"]
+    },
+    {
+      company: "Startup - Less/No Code Platform",
+      role: "Senior Software Engineer",
+      period: "November 2015 - November 2017",
+      location: "Hyderabad, India",
+      highlights: [
+        "Pioneered the development of a flagship No/Less Code platform empowering business logic configuration visual tools running on a robust Java and Spring Boot ecosystem.",
+        "Designed dynamic, highly stateful visual workflow builders utilizing modern JavaScript frameworks, allowing drag-and-drop customization of functional routing.",
+        "Served as the primary DevOps & Deployment Engineer, provisioning secure, fault-tolerant infrastructure on AWS including EC2, S3, RDS, and automated Lambda routines."
+      ],
+      skillsUsed: ["JavaScript", "React.js", "Spring Boot", "AWS (EC2, S3, SNS, Lambda, Bedrock)", "Docker", "REST"]
+    },
+    {
+      company: "Oracle",
+      role: "Software Developer",
+      period: "March 2014 - November 2015",
+      location: "Hyderabad, India",
+      highlights: [
+        "Contributed to the Core Commerce squad supporting the globally acclaimed Oracle Commerce / ATG suite.",
+        "Designed and customized complex transactional enhancements in key Pricing, Checkout, and Order Management modules."
+      ],
+      skillsUsed: ["Java", "J2EE", "JSP", "Servlets", "Oracle 11g", "SOAP"]
+    },
+    {
+      company: "Tata Consultancy Services (TCS)",
+      role: "Systems Engineer / Java Developer",
+      period: "January 2012 - March 2014",
+      location: "Pune, India",
+      highlights: [
+        "Built and maintained carrier-grade network element management systems (EMS/NMS) for international telecommunication clients.",
+        "Revamped dated UI components of critical core monitoring screens into responsive, standards-compliant JavaScript/HTML representations."
+      ],
+      skillsUsed: ["Java", "JavaScript", "HTML/CSS", "JSP", "Servlets"]
+    }
+  ],
+
+  education: {
+    degree: "Master's Degree, Electronics (VLSI)",
+    college: "Vignan's Foundation for Science, Technology & Research",
+    period: "2009 - 2011"
+  }
+};
+
+// --- PRE-BAKED ANSWERS FOR THE RECRUITER AI CHAT AGENT ---
+const MOCK_BOT_RESPONSES = [
+  {
+    keywords: ["rag", "graph rag", "graph", "retrieve"],
+    reply: "Niranjan is a specialist in **Graph RAG (Retrieval-Augmented Generation)** systems! At *Cue Health*, he engineered a production system that automates patient diagnostic report analysis. He developed a Python pipeline that parses clinical reports, builds relationships, and feeds them into a Graph Database to derive deep visual insights. This improved analysis times by 40%."
+  },
+  {
+    keywords: ["agent", "agentic", "ai", "workflow"],
+    reply: "At *Oracle (April 2024 - Present)*, Niranjan spearheads **agentic workflows** for the flagship Recruiting module. He orchestrates multi-agent systems designed to guide candidates dynamically through application steps, optimize user interaction within the Oracle Fusion Hiring suite, and scale complex corporate hiring systems."
+  },
+  {
+    keywords: ["cloud", "aws", "gcp", "azure"],
+    reply: "Niranjan has powerful multi-cloud capabilities. On **GCP (Google Cloud)**, he architected secure, HIPAA-compliant microservices at Cue Health using Kubernetes. On **AWS**, he served as a primary deployment engineer for a Less/No-Code Startup, managing EC2, S3, SNS, and serverless Lambdas."
+  },
+  {
+    keywords: ["stack", "frontend", "backend", "react", "java"],
+    reply: "Niranjan offers a superb dual-strength profile. His core backend foundation is built on **Java / Spring Boot / Spring WebFlux** and **Python** (13+ years of experience). On the frontend, he has architected heavy client-side applications using **React.js, TypeScript, and modern JS** to render sophisticated interactive dashboards."
+  },
+  {
+    keywords: ["experience", "years", "oracle", "tcs"],
+    reply: "Niranjan has over **13 years of enterprise software engineering experience**. He has spent substantial parts of his career at **Oracle** (across multiple terms as Software Developer, Project Lead, and currently Principal Applications Engineer), along with high-impact tenures at **Cue Health**, an innovative software startup, and **TCS**."
+  },
+  {
+    keywords: ["contact", "email", "phone", "linkedin"],
+    reply: "You can reach Niranjan directly at **niranjan.syamala@gmail.com** or call him at **+91 9949959967**. His LinkedIn is [linkedin.com/in/niranjansyamala](https://linkedin.com/in/niranjansyamala)."
+  }
+];
+
+export default function App() {
+  const [selectedSkill, setSelectedSkill] = useState("");
+  const [theme, setTheme] = useState("dark"); // dark or light
+  const [recruiterMode, setRecruiterMode] = useState(false); // Clean layout for printing/saving
+  const [chatInput, setChatInput] = useState("");
+  const [chatHistory, setChatHistory] = useState([
+    { sender: "agent", text: "Hello! I am Niranjan's career AI Agent. Ask me anything about his technical experience, Graph RAG expertise, or recent projects at Oracle!" }
+  ]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const chatEndRef = useRef(null);
+
+  // Auto Scroll Chat
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatHistory]);
+
+  // Skill highlighting state helper
+  const handleSkillToggle = (skill) => {
+    if (selectedSkill === skill) {
+      setSelectedSkill("");
+    } else {
+      setSelectedSkill(skill);
+      // Scroll to experience section
+      const expSection = document.getElementById("experience-section");
+      if (expSection) {
+        expSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  // Chat message submission
+  const handleSendMessage = (textToSend) => {
+    const text = textToSend || chatInput;
+    if (!text.trim()) return;
+
+    const newUserMessage = { sender: "user", text };
+    setChatHistory(prev => [...prev, newUserMessage]);
+    if (!textToSend) setChatInput("");
+
+    // Simulate AI Agent processing with a small typing lag
+    setTimeout(() => {
+      const normalizedText = text.toLowerCase();
+      let match = null;
+
+      // Find keyword match
+      for (const response of MOCK_BOT_RESPONSES) {
+        if (response.keywords.some(keyword => normalizedText.includes(keyword))) {
+          match = response;
+          break;
+        }
+      }
+
+      const botReply = match 
+        ? match.reply 
+        : "I can tell you all about Niranjan's 13+ years of experience! Try asking about 'Graph RAG', 'Agentic Workflows', 'AWS/GCP Cloud', or his 'React and Java' skills.";
+
+      setChatHistory(prev => [...prev, { sender: "agent", text: botReply }]);
+    }, 600);
+  };
+
+  // Filter skills list based on search
+  const allSkillsFlat = useMemo(() => {
+    return Object.entries(RESUME_DATA.skills).flatMap(([category, list]) => 
+      list.map(skill => ({ skill, category }))
+    );
+  }, []);
+
+  const filteredSkillsFlat = useMemo(() => {
+    if (!searchQuery) return allSkillsFlat;
+    return allSkillsFlat.filter(item => 
+      item.skill.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, allSkillsFlat]);
+
+  // Handle PDF Export helper
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <div className={`min-h-screen font-sans transition-colors duration-300 ${theme === 'dark' ? 'bg-zinc-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+      
+      {/* HEADER & CONTROL CONTROLS (Floating) */}
+      <header className={`sticky top-0 z-50 backdrop-blur-md border-b transition-colors duration-300 ${theme === 'dark' ? 'bg-zinc-950/80 border-zinc-800' : 'bg-white/80 border-slate-200'} no-print`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-black text-lg shadow-lg">
+              NS
+            </div>
+            <div>
+              <span className="font-bold tracking-tight block text-sm sm:text-base">Niranjan Syamala</span>
+              <span className="text-xs text-cyan-500 font-semibold tracking-wider uppercase">Principal Engineer / AI Specialist</span>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Toggle Clean Recruiter Mode */}
+            <button
+              onClick={() => setRecruiterMode(!recruiterMode)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+                recruiterMode 
+                  ? 'bg-emerald-600 text-white shadow-md' 
+                  : theme === 'dark' ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+              }`}
+              title="Toggle printable standard resume view"
+            >
+              <span className={`w-2 h-2 rounded-full ${recruiterMode ? 'bg-white animate-pulse' : 'bg-slate-400'}`}></span>
+              {recruiterMode ? 'Normal View' : 'Recruiter Mode (Printable)'}
+            </button>
+
+            {/* Dark / Light Toggle */}
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className={`p-2 rounded-lg transition ${theme === 'dark' ? 'bg-zinc-800 text-yellow-400 hover:bg-zinc-700' : 'bg-slate-200 text-indigo-900 hover:bg-slate-300'}`}
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+              )}
+            </button>
+
+            {/* Direct Print Button */}
+            <button
+              onClick={handlePrint}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow transition"
+            >
+              <DownloadIcon />
+              <span className="hidden sm:inline">Print / Save PDF</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* RECRUITER MODE (Classic Print Resume Layout) */}
+      {recruiterMode ? (
+        <main className="max-w-4xl mx-auto p-6 sm:p-12 transition-all duration-300 animate-fadeIn">
+          {/* Print Alert Warning */}
+          <div className="mb-6 p-4 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded-lg text-sm flex justify-between items-center no-print">
+            <span>✨ <strong>Recruiter Mode Active:</strong> Clean, standard single-page format optimized for printing. Click "Print / Save PDF" above to export.</span>
+            <button onClick={() => setRecruiterMode(false)} className="underline font-bold text-xs">Exit</button>
+          </div>
+
+          <div className={`p-8 rounded-xl shadow-2xl border ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-slate-200'}`}>
+            <div className="text-center border-b pb-6">
+              <h1 className="text-3xl font-extrabold tracking-tight uppercase">{RESUME_DATA.name}</h1>
+              <p className="text-indigo-600 font-semibold tracking-wide mt-1">{RESUME_DATA.title}</p>
+              <div className="flex flex-wrap justify-center gap-4 mt-3 text-sm text-slate-500">
+                <span>📍 {RESUME_DATA.location}</span>
+                <span>📧 {RESUME_DATA.email}</span>
+                <span>📞 {RESUME_DATA.phone}</span>
+                <span>🔗 {RESUME_DATA.linkedin}</span>
+              </div>
+            </div>
+
+            {/* Print Summary */}
+            <div className="mt-6">
+              <h2 className="text-lg font-bold border-b pb-1 uppercase tracking-wider text-indigo-600">Professional Summary</h2>
+              <p className="text-sm mt-2 leading-relaxed text-justify">{RESUME_DATA.summary}</p>
+            </div>
+
+            {/* Print Technical Skills */}
+            <div className="mt-6">
+              <h2 className="text-lg font-bold border-b pb-1 uppercase tracking-wider text-indigo-600">Technical Skills</h2>
+              <div className="grid grid-cols-2 gap-4 mt-3 text-xs">
+                {Object.entries(RESUME_DATA.skills).map(([category, items]) => (
+                  <div key={category}>
+                    <strong className="text-slate-400 block mb-1">{category}</strong>
+                    <p className="text-slate-300 font-medium">{items.join(', ')}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Print Work Experience */}
+            <div className="mt-6">
+              <h2 className="text-lg font-bold border-b pb-1 uppercase tracking-wider text-indigo-600">Professional Experience</h2>
+              <div className="space-y-4 mt-3">
+                {RESUME_DATA.experience.map((job, idx) => (
+                  <div key={idx} className="text-xs">
+                    <div className="flex justify-between font-bold text-slate-200">
+                      <span>{job.role} — {job.company}</span>
+                      <span className="text-indigo-400">{job.period}</span>
+                    </div>
+                    <ul className="list-disc list-inside mt-1.5 space-y-1 text-slate-400">
+                      {job.highlights.map((h, hIdx) => (
+                        <li key={hIdx} className="leading-relaxed">{h}</li>
+                      ))}
+                    </ul>
+                    <div className="mt-1.5 text-slate-500">
+                      <strong>Tech Stack:</strong> {job.skillsUsed.join(', ')}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Print Education */}
+            <div className="mt-6">
+              <h2 className="text-lg font-bold border-b pb-1 uppercase tracking-wider text-indigo-600">Education</h2>
+              <div className="flex justify-between text-xs mt-2 font-medium">
+                <div>
+                  <strong className="text-slate-200">{RESUME_DATA.education.degree}</strong>
+                  <div className="text-slate-400">{RESUME_DATA.education.college}</div>
+                </div>
+                <div className="text-indigo-400 font-bold">{RESUME_DATA.education.period}</div>
+              </div>
+            </div>
+          </div>
+        </main>
+      ) : (
+        /* STANDARD DYNAMIC PORTFOLIO WEBSITE LAYOUT */
+        <div>
+          {/* HERO BANNER SECTION WITH NETWORK GRAPH ACCENT */}
+          <section className="relative overflow-hidden py-16 sm:py-24 border-b border-zinc-900">
+            {/* Visual Canvas Nodes background mimicking a Graph DB */}
+            <div className="absolute inset-0 opacity-15 pointer-events-none">
+              <div className="absolute top-10 left-1/4 w-32 h-32 bg-cyan-500 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-10 right-1/4 w-40 h-40 bg-indigo-600 rounded-full blur-3xl"></div>
+              
+              {/* Network simulation using SVG lines */}
+              <svg className="w-full h-full text-indigo-500 stroke-current opacity-30" xmlns="http://www.w3.org/2000/svg">
+                <line x1="10%" y1="20%" x2="30%" y2="50%" strokeWidth="1" strokeDasharray="5,5" />
+                <line x1="30%" y1="50%" x2="60%" y2="30%" strokeWidth="1.5" />
+                <line x1="60%" y1="30%" x2="90%" y2="70%" strokeWidth="1" />
+                <line x1="30%" y1="50%" x2="50%" y2="80%" strokeWidth="1" />
+                <circle cx="10%" cy="20%" r="5" fill="#06b6d4" />
+                <circle cx="30%" cy="50%" r="8" fill="#6366f1" />
+                <circle cx="60%" cy="30%" r="6" fill="#3b82f6" />
+                <circle cx="90%" cy="70%" r="7" fill="#10b981" />
+                <circle cx="50%" cy="80%" r="5" fill="#a855f7" />
+              </svg>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 
-                <div class="item">
-                    <div class="meta">
-                        <div class="upper-row">
-                            <h3 class="job-title">Senior Software Developer</h3>
-                            <div class="time">2015 - 2017</div>
-                        </div><!--//upper-row-->
-                        <div class="company">Bitkemy/Kagammi India Pvt. Ltd.</div>
-                    </div><!--//meta-->
-                    <div class="details">
-                       <p>Coming soon</p>
-                    </div><!--//details-->
-                </div><!--//item-->
+                {/* Hero Main Description */}
+                <div className="lg:col-span-7 space-y-6">
+                  <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-950 to-indigo-950 border border-indigo-500/30 text-cyan-400 text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                    <span>13+ Years Expert Software Engineer</span>
+                  </div>
+                  
+                  <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
+                    Hi, I'm <span className="bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-500 bg-clip-text text-transparent">{RESUME_DATA.name}</span>
+                  </h1>
+                  
+                  <p className="text-xl font-medium text-slate-400">
+                    Principal AI Applications Engineer at Oracle
+                  </p>
+
+                  <p className={`text-base leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
+                    I architect enterprise AI-driven environments, specializing in **Graph Retrieval-Augmented Generation (Graph RAG)**, 
+                    scalable **Agentic Workflows**, and highly complex full-stack web products. I leverage massive data connections to drive mission-critical corporate decisions.
+                  </p>
+
+                  {/* Contact Links Bar */}
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    <a href={`mailto:${RESUME_DATA.email}`} className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-slate-200 px-4 py-2.5 rounded-xl text-sm font-medium transition">
+                      <MailIcon />
+                      <span>{RESUME_DATA.email}</span>
+                    </a>
+                    <a href={`tel:${RESUME_DATA.phone}`} className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-slate-200 px-4 py-2.5 rounded-xl text-sm font-medium transition">
+                      <PhoneIcon />
+                      <span>+91 {RESUME_DATA.phone}</span>
+                    </a>
+                    <a href={`https://${RESUME_DATA.linkedin}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-indigo-900/30 hover:bg-indigo-900/50 border border-indigo-500/40 text-slate-200 px-4 py-2.5 rounded-xl text-sm font-medium transition">
+                      <LinkedinIcon />
+                      <span>LinkedIn Profile</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* GRAPH RAG & RECRUITER AI SIMULATION WIDGET */}
+                <div className="lg:col-span-5">
+                  <div className={`rounded-2xl border shadow-2xl overflow-hidden transition ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-slate-200'}`}>
+                    {/* Bot Header */}
+                    <div className="bg-gradient-to-r from-cyan-950 to-indigo-950 px-4 py-3 flex items-center justify-between border-b border-zinc-800">
+                      <div className="flex items-center space-x-2.5">
+                        <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <span className="text-xs font-bold text-white uppercase tracking-wider">Hiring Agent Assistant v1.0</span>
+                      </div>
+                      <BrainIcon />
+                    </div>
+
+                    {/* Bot Dialogue History */}
+                    <div className="p-4 h-64 overflow-y-auto space-y-3 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                      {chatHistory.map((msg, idx) => (
+                        <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed ${
+                            msg.sender === 'user' 
+                              ? 'bg-indigo-600 text-white rounded-tr-none' 
+                              : theme === 'dark' 
+                                ? 'bg-zinc-800 text-zinc-200 rounded-tl-none border border-zinc-700' 
+                                : 'bg-slate-100 text-slate-800 rounded-tl-none border border-slate-200'
+                          }`}>
+                            {msg.text}
+                          </div>
+                        </div>
+                      ))}
+                      <div ref={chatEndRef} />
+                    </div>
+
+                    {/* Pre-baked Question Prompts */}
+                    <div className="px-4 pb-3 pt-1 border-t border-zinc-800/60">
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold mb-2">Recruiter Quick Questions</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        <button onClick={() => handleSendMessage("Tell me about Graph RAG")} className="text-[10px] bg-zinc-800 hover:bg-cyan-950 hover:text-cyan-400 transition text-zinc-300 px-2 py-1 rounded border border-zinc-700">
+                          Graph RAG?
+                        </button>
+                        <button onClick={() => handleSendMessage("What did he do with Agentic Workflows?")} className="text-[10px] bg-zinc-800 hover:bg-cyan-950 hover:text-cyan-400 transition text-zinc-300 px-2 py-1 rounded border border-zinc-700">
+                          Agentic Workflows?
+                        </button>
+                        <button onClick={() => handleSendMessage("Does he know React & Frontend?")} className="text-[10px] bg-zinc-800 hover:bg-cyan-950 hover:text-cyan-400 transition text-zinc-300 px-2 py-1 rounded border border-zinc-700">
+                          React / UI?
+                        </button>
+                        <button onClick={() => handleSendMessage("Show cloud and backend skills")} className="text-[10px] bg-zinc-800 hover:bg-cyan-950 hover:text-cyan-400 transition text-zinc-300 px-2 py-1 rounded border border-zinc-700">
+                          GCP/AWS Cloud?
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Input field */}
+                    <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex border-t border-zinc-800">
+                      <input
+                        type="text"
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        placeholder="Type 'Graph RAG', 'React', 'Java'..."
+                        className="flex-grow bg-transparent text-xs px-4 py-3 outline-none focus:ring-0 text-slate-100 placeholder-zinc-500"
+                      />
+                      <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 transition text-white px-4 text-xs font-bold uppercase tracking-wider">
+                        Ask
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* DYNAMIC SKILL CONNECTION MATRIX SECTION */}
+          <section className="py-12 sm:py-16 border-b border-zinc-900 bg-zinc-950/20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              
+              <div className="text-center max-w-2xl mx-auto space-y-2 mb-10">
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Interactive Knowledge Matrix</h2>
+                <p className="text-slate-400 text-sm">
+                  Filter his 13+ year career timeline by selecting skills below. See the exact points in time where Niranjan utilized each tool.
+                </p>
+              </div>
+
+              {/* Skill Filter Search & Reset */}
+              <div className="max-w-md mx-auto mb-8 flex items-center space-x-3">
+                <div className="relative flex-grow">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-zinc-500">
+                    <SearchIcon />
+                  </span>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search tools (e.g. AWS, Python, React)..."
+                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 text-slate-100"
+                  />
+                </div>
+                {selectedSkill && (
+                  <button 
+                    onClick={() => setSelectedSkill("")}
+                    className="text-xs bg-red-950/30 text-red-400 hover:bg-red-950/60 border border-red-500/30 px-3 py-2 rounded-xl transition font-medium"
+                  >
+                    Reset Filter
+                  </button>
+                )}
+              </div>
+
+              {/* Categorized Skills Showcase */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {Object.entries(RESUME_DATA.skills).map(([category, list]) => {
+                  const itemsInFiltered = list.filter(skill => 
+                    filteredSkillsFlat.some(f => f.skill === skill)
+                  );
+                  if (itemsInFiltered.length === 0) return null;
+                  
+                  return (
+                    <div 
+                      key={category} 
+                      className={`p-5 rounded-2xl border transition duration-300 ${
+                        theme === 'dark' ? 'bg-zinc-900/60 border-zinc-800' : 'bg-white border-slate-200 shadow-sm'
+                      }`}
+                    >
+                      <h3 className="text-xs font-black text-cyan-400 tracking-wider uppercase mb-3 pb-1.5 border-b border-zinc-800">{category}</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {itemsInFiltered.map((skill) => {
+                          const isSelected = selectedSkill === skill;
+                          return (
+                            <button
+                              key={skill}
+                              onClick={() => handleSkillToggle(skill)}
+                              className={`text-xs px-2.5 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                                isSelected 
+                                  ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold scale-105 shadow-md' 
+                                  : theme === 'dark' 
+                                    ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700/50' 
+                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                              }`}
+                            >
+                              {skill}
+                              {isSelected && <StarIcon />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {selectedSkill && (
+                <div className="mt-6 text-center animate-bounce">
+                  <span className="text-xs bg-indigo-950 text-indigo-400 border border-indigo-500/30 px-4 py-1.5 rounded-full font-semibold">
+                    ⚡ Experience highlighted for: {selectedSkill} (See timeline below)
+                  </span>
+                </div>
+              )}
+
+            </div>
+          </section>
+
+          {/* CHRONOLOGICAL CAREER TIMELINE */}
+          <section id="experience-section" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto space-y-2 mb-16">
+              <h2 className="text-3xl font-extrabold tracking-tight">The Career Journey</h2>
+              <p className="text-slate-400 text-sm">
+                13+ years of continuous innovation, from carrier-grade telecom platforms to advanced conversational agents.
+              </p>
+            </div>
+
+            <div className="relative border-l border-zinc-800 ml-4 md:ml-32 space-y-12">
+              {RESUME_DATA.experience.map((job, idx) => {
+                const usesActiveSkill = selectedSkill ? job.skillsUsed.includes(selectedSkill) : true;
                 
-                <div class="item">
-                    <div class="meta">
-                        <div class="upper-row">
-                            <h3 class="job-title">Software Developer</h3>
-                            <div class="time">2014 - 2015</div>
-                        </div><!--//upper-row-->
-                        <div class="company">Oracle India Pvt Ltd</div>
-                    </div><!--//meta-->
-                    <div class="details">
-                        <p>Coming soon</p>  
-                    </div><!--//details-->
-                </div><!--//item-->
+                return (
+                  <div 
+                    key={idx} 
+                    className={`relative pl-8 transition-all duration-500 ${
+                      usesActiveSkill ? 'opacity-100 scale-100' : 'opacity-20 scale-95 blur-[1px] pointer-events-none'
+                    }`}
+                  >
+                    {/* Visual Connector Dot */}
+                    <span className={`absolute -left-3 top-1.5 w-6 h-6 rounded-full flex items-center justify-center border-4 transition-colors ${
+                      usesActiveSkill 
+                        ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 border-zinc-950 ring-2 ring-indigo-500/50' 
+                        : 'bg-zinc-800 border-zinc-900'
+                    }`}>
+                      <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+                    </span>
+
+                    {/* Left Absolute Time block for wider viewports */}
+                    <div className="hidden md:block absolute -left-36 top-1.5 w-28 text-right">
+                      <span className="text-xs font-bold text-indigo-400 tracking-wider block">{job.period}</span>
+                      <span className="text-[10px] text-zinc-500 block uppercase font-semibold mt-0.5">{job.location}</span>
+                    </div>
+
+                    {/* Timeline card container */}
+                    <div className={`p-6 rounded-2xl border transition duration-300 ${
+                      theme === 'dark' 
+                        ? 'bg-zinc-900/50 border-zinc-800 hover:border-indigo-500/50' 
+                        : 'bg-white border-slate-200 hover:border-indigo-500/50 shadow-md'
+                    }`}>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
+                        <div>
+                          <span className="text-xs font-bold text-indigo-400 tracking-wider block md:hidden mb-1">{job.period}</span>
+                          <h3 className="text-xl font-bold leading-tight">{job.role}</h3>
+                          <p className="text-cyan-400 font-semibold text-sm">{job.company}</p>
+                        </div>
+                        <span className="inline-flex items-center mt-2 sm:mt-0 text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+                          {job.skillsUsed.length} Key Skills Applied
+                        </span>
+                      </div>
+
+                      {/* Accomplishments checklist */}
+                      <ul className="space-y-2.5 text-xs text-slate-300 leading-relaxed list-none">
+                        {job.highlights.map((highlight, itemIdx) => (
+                          <li key={itemIdx} className="flex items-start gap-2.5">
+                            <span className="text-cyan-500 mt-1 select-none">✓</span>
+                            <span className={`${theme === 'dark' ? 'text-zinc-300' : 'text-slate-700'}`}>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {/* Micro skill badges utilized specifically for this position */}
+                      <div className="mt-5 pt-4 border-t border-zinc-800/60 flex flex-wrap gap-1.5">
+                        {job.skillsUsed.map((sk) => (
+                          <span 
+                            key={sk} 
+                            onClick={() => handleSkillToggle(sk)}
+                            className={`text-[10px] cursor-pointer font-semibold px-2 py-1 rounded-md transition ${
+                              selectedSkill === sk 
+                                ? 'bg-indigo-600 text-white scale-105' 
+                                : 'bg-zinc-800/80 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
+                            }`}
+                          >
+                            {sk}
+                          </span>
+                        ))}
+                      </div>
+
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* KNOWLEDGE GRAPH SIMULATION FOR GRAPH RAG DEPTH */}
+          <section className="py-16 border-t border-b border-zinc-900 bg-zinc-950/40">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 
-                <div class="item">
-                    <div class="meta">
-                        <div class="upper-row">
-                            <h3 class="job-title">Systems Engineer</h3>
-                            <div class="time">2012 - 2014</div>
-                        </div><!--//upper-row-->
-                        <div class="company">TATA Consultancy services</div>
-                    </div><!--//meta-->
-                    <div class="details">
-                        <p>Coming soon</p>
-                    </div><!--//details-->
-                </div><!--//item-->
-                
-            </section><!--//section-->
-            
-            <section class="skills-section section">
-                <h2 class="section-title"><i class="fa fa-rocket"></i>Skills &amp; Proficiency</h2>
-                <div class="skillset">        
-                    <div class="item">
-                        <h3 class="level-title">Core Java</h3>
-                        <div class="level-bar">
-                            <div class="level-bar-inner" data-level="98%">
-                            </div>                                      
-                        </div><!--//level-bar-->                                 
-                    </div><!--//item-->
-                    <div class="item">
-                        <h3 class="level-title">Spring & Hibernate</h3>
-                        <div class="level-bar">
-                            <div class="level-bar-inner" data-level="80%">
-                            </div>                                      
-                        </div><!--//level-bar-->                                 
-                    </div><!--//item-->
-                    <div class="item">
-                        <h3 class="level-title">Javascript &amp; jQuery</h3>
-                        <div class="level-bar">
-                            <div class="level-bar-inner" data-level="50%">
-                            </div>                                      
-                        </div><!--//level-bar-->                                 
-                    </div><!--//item-->
-                    
-                    <div class="item">
-                        <h3 class="level-title">Angular</h3>
-                        <div class="level-bar">
-                            <div class="level-bar-inner" data-level="50%">
-                            </div>                                      
-                        </div><!--//level-bar-->                                 
-                    </div><!--//item-->
-                    
-                    <div class="item">
-                        <h3 class="level-title">HTML5 &amp; CSS</h3>
-                        <div class="level-bar">
-                            <div class="level-bar-inner" data-level="75%">
-                            </div>                                      
-                        </div><!--//level-bar-->                                 
-                    </div><!--//item-->
-                    
-                    <div class="item">
-                        <h3 class="level-title">Maven/Graddle/Ant</h3>
-                        <div class="level-bar">
-                            <div class="level-bar-inner" data-level="85%">
-                            </div>                                      
-                        </div><!--//level-bar-->                                 
-                    </div><!--//item-->
-                    
-                   
-                    
-                </div>  
-            </section><!--//skills-section-->
-            
-        </div><!--//main-body-->
+                <div className="lg:col-span-5 space-y-6">
+                  <div className="w-12 h-12 bg-cyan-950 text-cyan-400 rounded-2xl flex items-center justify-center border border-cyan-500/30 shadow-lg">
+                    <GraphIcon />
+                  </div>
+                  <h2 className="text-3xl font-extrabold tracking-tight">Expertise in Graph RAG</h2>
+                  <p className="text-base text-slate-300 leading-relaxed">
+                    Most conventional RAG processes simply search vector chunks. Niranjan's specialized deployment combines 
+                    **Knowledge Graphs** with vector embeddings. 
+                  </p>
+                  <p className="text-sm text-slate-400 leading-relaxed">
+                    This double-layered indexing technique extracts clean, structural links from medical documents, recruitment metrics, 
+                    and corporate records—providing a holistic, reliable response free of typical model hallucinations.
+                  </p>
+                  
+                  <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl text-xs space-y-2">
+                    <strong className="text-slate-200 block uppercase tracking-widest text-[10px] text-cyan-400">Under the Hood:</strong>
+                    <p className="text-slate-400 font-mono">
+                      Python Parsing Engine → Neo4j Entity Connection Mapping → Spring WebFlux Reactive Routing → Multi-Agent Evaluation Loop
+                    </p>
+                  </div>
+                </div>
+
+                {/* Simulated Graph Workspace Panel */}
+                <div className="lg:col-span-7">
+                  <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Entity relationship visualization</span>
+                      <span className="text-[10px] bg-cyan-950 text-cyan-400 font-bold px-2 py-0.5 rounded">Simulated Graph Node Map</span>
+                    </div>
+
+                    {/* Nodes Interactive Playboard */}
+                    <div className="relative h-72 bg-zinc-950 rounded-xl overflow-hidden border border-zinc-850 flex items-center justify-center">
+                      
+                      {/* Connection Lines */}
+                      <svg className="absolute inset-0 w-full h-full stroke-zinc-800 text-zinc-800" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="50%" y1="50%" x2="20%" y2="25%" strokeWidth="2" stroke="#4f46e5" />
+                        <line x1="50%" y1="50%" x2="80%" y2="30%" strokeWidth="2" stroke="#4f46e5" />
+                        <line x1="50%" y1="50%" x2="50%" y2="80%" strokeWidth="2" stroke="#0891b2" />
+                        <line x1="20%" y1="25%" x2="15%" y2="65%" strokeWidth="1" strokeDasharray="4,4" />
+                        <line x1="80%" y1="30%" x2="85%" y2="70%" strokeWidth="1" strokeDasharray="4,4" />
+                      </svg>
+
+                      {/* Main Node (Niranjan) */}
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-gradient-to-tr from-cyan-500 to-indigo-600 flex flex-col items-center justify-center text-center text-white p-2 shadow-2xl ring-4 ring-indigo-500/30">
+                        <span className="text-[10px] font-black tracking-tight leading-none uppercase">Niranjan</span>
+                        <span className="text-[7px] text-cyan-200 mt-0.5">Core Architect</span>
+                      </div>
+
+                      {/* Orbiting Tech Nodes */}
+                      <div className="absolute top-[15%] left-[12%] p-2 rounded-xl bg-zinc-900 border border-zinc-700 text-center text-white shadow-lg">
+                        <span className="text-[9px] font-bold block text-cyan-400">Graph RAG</span>
+                        <span className="text-[7px] text-zinc-500">Cue Health System</span>
+                      </div>
+
+                      <div className="absolute top-[20%] right-[10%] p-2 rounded-xl bg-zinc-900 border border-zinc-700 text-center text-white shadow-lg">
+                        <span className="text-[9px] font-bold block text-purple-400">Agentic Orchestration</span>
+                        <span className="text-[7px] text-zinc-500">Oracle Recruiting</span>
+                      </div>
+
+                      <div className="absolute bottom-[10%] left-[35%] p-2 rounded-xl bg-zinc-900 border border-zinc-700 text-center text-white shadow-lg">
+                        <span className="text-[9px] font-bold block text-emerald-400">Full-Stack Frameworks</span>
+                        <span className="text-[7px] text-zinc-500">React.js & Spring Boot</span>
+                      </div>
+
+                      {/* Auxiliary nodes */}
+                      <div className="absolute bottom-[25%] left-[8%] p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-[8px] text-zinc-400">
+                        Python Engines
+                      </div>
+
+                      <div className="absolute bottom-[20%] right-[8%] p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-[8px] text-zinc-400">
+                        AWS & GCP Clouds
+                      </div>
+                    </div>
+
+                    <p className="text-[10px] text-zinc-500 text-center mt-3">
+                      This graph topology connects systems, stacks, and company outputs directly into intelligent query modules.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* EDUCATION & ACADEMIC BACKDROP */}
+          <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              
+              <div className={`p-8 rounded-2xl border transition ${
+                theme === 'dark' ? 'bg-zinc-900/40 border-zinc-800' : 'bg-white border-slate-200 shadow-lg'
+              }`}>
+                <h3 className="text-xs font-black text-indigo-400 tracking-wider uppercase mb-2">Education Background</h3>
+                <h4 className="text-2xl font-extrabold tracking-tight mb-2">{RESUME_DATA.education.degree}</h4>
+                <p className="text-slate-300 font-medium text-sm mb-4">{RESUME_DATA.education.college}</p>
+                <div className="flex items-center justify-between text-xs text-zinc-500">
+                  <span>Major: VLSI Electronics Integration</span>
+                  <span className="bg-indigo-950 text-indigo-400 px-3 py-1 rounded font-bold">{RESUME_DATA.education.period}</span>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-2xl font-bold tracking-tight">Need a hard-copy PDF?</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Switch the page instantly to <strong>Recruiter Mode</strong> using the button in the upper menu. 
+                  It formats the layout to replicate a classic, beautifully arranged PDF document perfect for physical reference, 
+                  printing, or immediate ATS import.
+                </p>
+                <button
+                  onClick={() => {
+                    setRecruiterMode(true);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl transition"
+                >
+                  Switch to Printable Format
+                </button>
+              </div>
+
+            </div>
+          </section>
+
+          {/* FOOTER */}
+          <footer className="py-12 border-t border-zinc-900 text-center text-xs text-zinc-500">
+            <p>© 2026 {RESUME_DATA.name}. Built with React & Tailwind CSS.</p>
+            <p className="mt-1">Primary Email: {RESUME_DATA.email} | Phone: {RESUME_DATA.phone}</p>
+          </footer>
+        </div>
+      )}
+
     </div>
- 
-   
-    <!-- Javascript -->          
-    <script type="text/javascript" src="assets/plugins/jquery-1.11.3.min.js"></script>
-    <script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>    
-    <!-- custom js -->
-    <script type="text/javascript" src="assets/js/main.js"></script>            
-</body>
-</html> 
-
+  );
+}
